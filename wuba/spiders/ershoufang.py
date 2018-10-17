@@ -3,6 +3,7 @@ import scrapy
 from scrapy import Request
 import json
 import re
+import time
 
 
 class ErshoufangSpider(scrapy.Spider):
@@ -89,30 +90,37 @@ class ErshoufangSpider(scrapy.Spider):
         borough_ln = json.loads(jsonInfo)['locallist'][1]['listname']
         street = json.loads(jsonInfo)['locallist'][2]['name']
         street_ln = json.loads(jsonInfo)['locallist'][2]['listname']
-        name = json.loads(jsonInfo)['userName']
-        bankcard = json.loads(jsonInfo)['authentication']['bankCard']
-        realName = json.loads(jsonInfo)['authentication']['realName']
-        weixin = json.loads(jsonInfo)['authentication']['weixin']
-        zhima = json.loads(jsonInfo)['authentication']['zhima']
-        zhimaFen = json.loads(jsonInfo)['authentication']['zhimaFen']
-        start = json.loads(jsonInfo)['authentication']['start']
-        huxingshi = json.loads(jsonInfo)['supplycount']['paramdata']['huxingshi']
-        huxingwei = json.loads(jsonInfo)['supplycount']['paramdata']['huxingwei']
-        huxingting = json.loads(jsonInfo)['supplycount']['paramdata']['huxingting']
-        jushishuru = json.loads(jsonInfo)['supplycount']['paramdata']['jushishuru']
-        HireType = json.loads(jsonInfo)['supplycount']['paramdata']['HireType']
-        MinPrice = json.loads(jsonInfo)['supplycount']['paramdata']['MinPrice']
+        username = json.loads(jsonInfo)['personal']['userName']
+        tel = response.xpath('//p[@class="phone-num"]/text()').extract()[0]
+        pubTime = str(json.loads(jsonInfo)['_trackParams'][17]['V'])
+        pubTime = '{0}-{1}-{2} {3}:{4}:{5}'.format(pubTime[0:4], pubTime[4:6], pubTime[6:8], pubTime[8:10],pubTime[10:12], pubTime[12:14])
+        realEstateE = json.loads(jsonInfo)['_trackParams'][19]['V'] # 产权年限
+        buildYear = json.loads(jsonInfo)['_trackParams'][20]['V']
+        bankcard = json.loads(jsonInfo)['personal']['authentication']['bankCard']
+        realName = json.loads(jsonInfo)['personal']['authentication']['realName']
+        weixin = json.loads(jsonInfo)['personal']['authentication']['weixin']
+        zhima = json.loads(jsonInfo)['personal']['authentication']['zhima']
+        zhimaFen = json.loads(jsonInfo)['personal']['authentication']['zhimaFen']
+        start = json.loads(jsonInfo)['start']/1000
+        wirteTime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(start))
+        supplycount = json.loads(jsonInfo)['supplycount'].replace("'",'"')
+        huxingshi = json.loads(supplycount)['paramdata']['huxingshi']
+        huxingwei = json.loads(supplycount)['paramdata']['huxingwei']
+        huxingting = json.loads(supplycount)['paramdata']['huxingting']
+        jushishuru = json.loads(supplycount)['paramdata']['jushishuru']
+        HireType = json.loads(supplycount)['paramdata']['HireType']#租用类型
+        MinPrice = json.loads(supplycount)['paramdata']['MinPrice']
         userid = json.loads(jsonInfo)['userid']
         price = json.loads(jsonInfo)['webim']['price']
         title = json.loads(jsonInfo)['webim']['title']
         realsize = json.loads(jsonInfo)['webim']['labels'][0]
         area = json.loads(jsonInfo)['webim']['labels'][1]
-        towards = json.loads(jsonInfo)['webim']['labels'][2]
+        towards = json.loads(jsonInfo)['webim']['labels'][2]#朝向
         xiaoqu_lat = json.loads(jsonInfo)['xiaoqu']['baidulat']
         xiaoqu_lon = json.loads(jsonInfo)['xiaoqu']['baidulon']
         xiaoqu_name = json.loads(jsonInfo)['xiaoqu']['name']
-        lat = json.loads(jsonInfo)['lat']
-        lon = json.loads(jsonInfo)['lon']
+        # lat = json.loads(jsonInfo)['xiaoqu']['lat']
+        # lon = json.loads(jsonInfo)['xiaoqu']['lon']
 
 
         print(city)
