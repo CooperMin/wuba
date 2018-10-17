@@ -17,7 +17,7 @@ class WubaItem(scrapy.Item):
     street = scrapy.Field()             #(3)街道
     username = scrapy.Field()           #(4)用户名/姓名
     tel = scrapy.Field()                #(5)电话
-    pubTime = scrapy.Field()            #(6)发布时间
+    # pubTime = scrapy.Field()            #(6)发布时间
     price = scrapy.Field()              #(22)价格(万元)
     realsize = scrapy.Field()           #(24)户型
     area = scrapy.Field()               #(25)面积
@@ -44,3 +44,4 @@ class WubaItem(scrapy.Item):
     city_ln = scrapy.Field()            #(30)城市代码
     borough_ln = scrapy.Field()         #(31)区县代码
     street_ln = scrapy.Field()          #(32)街道代码
+    pageUrl = scrapy.Field()            #(33)页面网址
