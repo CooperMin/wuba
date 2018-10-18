@@ -16,7 +16,7 @@ NEWSPIDER_MODULE = 'wuba.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'wuba (+http://www.yourdomain.com)'
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:62.0) Gecko/20100101 Firefox/62.0'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -46,15 +46,15 @@ DOWNLOAD_DELAY = 10
 
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-#SPIDER_MIDDLEWARES = {
-#    'wuba.middlewares.WubaSpiderMiddleware': 543,
-#}
+SPIDER_MIDDLEWARES = {
+   'wuba.middlewares.WubaSpiderMiddleware': 400,#543
+}
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'wuba.middlewares.WubaDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+   'wuba.middlewares.WubaDownloaderMiddleware': 500,#543
+}
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
@@ -64,9 +64,9 @@ DOWNLOAD_DELAY = 10
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'wuba.pipelines.WubaPipeline': 300,
-#}
+ITEM_PIPELINES = {
+   'wuba.pipelines.WubaPipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
@@ -88,3 +88,11 @@ DOWNLOAD_DELAY = 10
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+
+#连接Mysql
+MS_HS = 'localhost'
+MS_PR = 3306
+MS_DB = 'wubadata'
+MS_US = 'root'
+MS_PD = 'admin'

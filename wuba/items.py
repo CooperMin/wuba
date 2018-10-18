@@ -23,13 +23,13 @@ class WubaItem(scrapy.Item):
     area = scrapy.Field()               #(25)面积
     towards = scrapy.Field()            #(26)朝向
     realEstateE = scrapy.Field()        #(7)产权年限
-    buildYear = scrapy.Field()          #(8)建筑年代
+    # buildYear = scrapy.Field()          #(8)建筑年代
     bankcard = scrapy.Field()           #(9)是否绑定银行卡
     realName = scrapy.Field()           #(10)是否真实姓名
     weixin = scrapy.Field()             #(11)是否绑定微信
     zhima = scrapy.Field()              #(12)是否绑定芝麻信用
     zhimaFen = scrapy.Field()           #(13)芝麻分
-    wirteTime = scrapy.Field()          #(14)写入时间
+    # wirteTime = scrapy.Field()          #(14)写入时间
     huxingshi = scrapy.Field()          #(15)户型/室
     huxingwei = scrapy.Field()          #(16)户型/卫
     huxingting = scrapy.Field()         #(17)户型/厅

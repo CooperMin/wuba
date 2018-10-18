@@ -93,18 +93,24 @@ class ErshoufangSpider(scrapy.Spider):
         item['street'] = json.loads(jsonInfo)['locallist'][2]['name']
         item['street_ln'] = json.loads(jsonInfo)['locallist'][2]['listname']
         item['username'] = json.loads(jsonInfo)['personal']['userName']
-        item['tel'] = response.xpath('//p[@class="phone-num"]/text()').extract()[0]
+        item['tel'] = response.xpath('//p[@class="phone-num"]/text()').extract()[0].replace(' ','').strip()
         # pubTime = str(json.loads(jsonInfo)['_trackParams'][17]['V'])
         # item['pubTime'] = '{0}-{1}-{2} {3}:{4}:{5}'.format(pubTime[0:4], pubTime[4:6], pubTime[6:8], pubTime[8:10],pubTime[10:12], pubTime[12:14])
-        item['realEstateE'] = response.xpath('//span[contains(text(),"产权年限")]/following-sibling::span/text()').extract()[0]
-        item['buildYear'] = response.xpath('//span[contains(text(),"建筑年代")]/following-sibling::span/text()').extract()[0]
+        if '产权年限' in response.text:
+            item['realEstateE'] = response.xpath('//span[contains(text(),"产权年限")]/following-sibling::span/text()').extract()[0]
+        else:
+            item['realEstateE'] = ''
+        # if '建筑年代' in response.text:
+        #     item['buildYear'] = response.xpath('//span[contains(text(),"建筑年代")]/following-sibling::span/text()').extract()[0]
+        # else:
+        #     item['buildYear'] = ''
         item['bankcard'] = json.loads(jsonInfo)['personal']['authentication']['bankCard']
         item['realName'] = json.loads(jsonInfo)['personal']['authentication']['realName']
         item['weixin'] = json.loads(jsonInfo)['personal']['authentication']['weixin']
         item['zhima'] = json.loads(jsonInfo)['personal']['authentication']['zhima']
         item['zhimaFen'] = json.loads(jsonInfo)['personal']['authentication']['zhimaFen']
-        start = json.loads(jsonInfo)['start']/1000
-        item['wirteTime'] = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(start))
+        # start = json.loads(jsonInfo)['start']/1000
+        # item['wirteTime'] = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(start))
         supplycount = json.loads(jsonInfo)['supplycount'].replace("'",'"')
         item['huxingshi'] = json.loads(supplycount)['paramdata']['huxingshi']
         item['huxingwei'] = json.loads(supplycount)['paramdata']['huxingwei']
@@ -123,6 +129,5 @@ class ErshoufangSpider(scrapy.Spider):
         item['xiaoqu_name'] = json.loads(jsonInfo)['xiaoqu']['name']
         # lat = json.loads(jsonInfo)['xiaoqu']['lat']
         # lon = json.loads(jsonInfo)['xiaoqu']['lon']
-
-        print('end')
+        yield item
 
