@@ -93,6 +93,6 @@ ITEM_PIPELINES = {
 #连接Mysql
 MS_HS = 'localhost'
 MS_PR = 3306
-MS_DB = 'wubadata'
+MS_DB = 'wb_data'
 MS_US = 'root'
 MS_PD = 'admin'

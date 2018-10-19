@@ -4,3 +4,4 @@
 from scrapy import cmdline
 
 cmdline.execute(['scrapy','crawl','ershoufang'])
+cmdline.execute(['scrapy','crawl','ershoufang','-s','ershoufang.log'])

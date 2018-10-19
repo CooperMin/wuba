@@ -29,7 +29,7 @@ class WubaItem(scrapy.Item):
     weixin = scrapy.Field()             #(11)是否绑定微信
     zhima = scrapy.Field()              #(12)是否绑定芝麻信用
     zhimaFen = scrapy.Field()           #(13)芝麻分
-    # wirteTime = scrapy.Field()          #(14)写入时间
+    writeTime = scrapy.Field()          #(14)写入时间
     huxingshi = scrapy.Field()          #(15)户型/室
     huxingwei = scrapy.Field()          #(16)户型/卫
     huxingting = scrapy.Field()         #(17)户型/厅
