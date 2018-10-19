@@ -47,3 +47,4 @@ class WubaItem(scrapy.Item):
     pageUrl = scrapy.Field()            #(33)页面网址
     countPage = scrapy.Field()          #(34)页面总和(针对某一城市)
     pageNum = scrapy.Field()            #(35)页码(针对某一城市)
+    ord = scrapy.Field()                #(36)当前页码第几条链接

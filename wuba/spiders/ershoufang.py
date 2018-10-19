@@ -8,14 +8,16 @@ from wuba.items import WubaItem
 
 
 class ErshoufangSpider(scrapy.Spider):
+    city = 'sz'
     name = 'ershoufang'
-    allowed_domains = ['https://sh.58.com']
-    start_urls = ['http://https://sh.58.com/']
+    allowed_domains = [f'https://{city}.58.com']
+    start_urls = [f'http://https://{city}.58.com/']
 
 
     def start_requests(self):
+        city = 'sz'
         hds = {
-            'Host': 'sh.58.com',
+            'Host': f'{city}.58.com',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:62.0) Gecko/20100101 Firefox/62.0',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
@@ -23,22 +25,23 @@ class ErshoufangSpider(scrapy.Spider):
             'Upgrade-Insecure-Requests': 1
 
         }
-        start_url = 'https://sh.58.com/ershoufang/0/?PGTID=0d30000c-0000-2f8f-3fe6-946742aaab68&ClickID=1'
-        yield Request(url=start_url,callback=self.countPage,headers=hds,dont_filter=True)
+        start_url = f'https://{city}.58.com/ershoufang/0/?PGTID=0d30000c-0000-2f8f-3fe6-946742aaab68&ClickID=1'
+        yield Request(url=start_url,callback=self.countPage,headers=hds,meta={'city':city},dont_filter=True)
 
     def countPage(self,response):
         countPage = int(response.xpath('//div[@class="pager"]/a[@class="next"]/preceding-sibling::a[1]/span/text()').extract()[0])
         print(f'\033[1;31m共计{countPage}页！\033[0m')
         # countPage = 1 #测试代码，正式爬取请注释掉
         for pn in range(1,countPage+1):
+            city = response.meta['city']
             if pn == 1:
-                pageUrl = 'https://sh.58.com/ershoufang/0/?PGTID=0d30000c-0000-2f8f-3fe6-946742aaab68&ClickID=1'
-                referer = 'Referer: https://sh.58.com/ershoufang/?PGTID=0d200001-0000-2308-0e03-36c5cefc6be3&ClickID=1'
+                pageUrl = f'https://{city}.58.com/ershoufang/0/?PGTID=0d30000c-0000-2f8f-3fe6-946742aaab68&ClickID=1'
+                referer = f'Referer: https://{city}.58.com/ershoufang/?PGTID=0d200001-0000-2308-0e03-36c5cefc6be3&ClickID=1'
             else:
-                pageUrl = f'https://sh.58.com/ershoufang/pn{pn}/?PGTID=0d30000c-0000-2961-e285-4f874c6a41e0&ClickID=1'
-                referer = f'https://sh.58.com/ershoufang/pn{pn-1}/?PGTID=0d30000c-0000-2961-e285-4f874c6a41e0&ClickID=1'
+                pageUrl = f'https://{city}.58.com/ershoufang/0/pn{pn}/?PGTID=0d30000c-0000-2961-e285-4f874c6a41e0&ClickID=1'
+                referer = f'https://{city}.58.com/ershoufang/0/pn{pn-1}/?PGTID=0d30000c-0000-2961-e285-4f874c6a41e0&ClickID=1'
             hdl = {
-                'Host': 'sh.58.com',
+                'Host': f'{city}.58.com',
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:62.0) Gecko/20100101 Firefox/62.0',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                 'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
@@ -46,18 +49,21 @@ class ErshoufangSpider(scrapy.Spider):
                 'Upgrade-Insecure-Requests': 1,
                 'Referer': referer
             }
-            yield Request(url=pageUrl, callback=self.getLink, headers=hdl,meta={'pn':pn,'pageUrl':pageUrl,'countPage':countPage},dont_filter=True)
+            yield Request(url=pageUrl, callback=self.getLink, headers=hdl,meta={'pn':pn,'city':city,'pageUrl':pageUrl,'countPage':countPage},dont_filter=True)
 
     def getLink(self,response):
+        city = response.meta['city']
         pn = response.meta['pn']
         countPage = response.meta['countPage']
         pageUrl = response.meta['pageUrl']
         urlList = response.xpath('//ul[@class="house-list-wrap"]/li')
+        count = 0
         for info in urlList:
             url = info.xpath('div[@class="list-info"]/h2[@class="title"]/a/@href').extract()[0]
             if 'ershoufang' in url:
+                count += 1
                 hdd = {
-                    'Host': 'sh.58.com',
+                    'Host': f'{city}.58.com',
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:62.0) Gecko/20100101 Firefox/62.0',
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                     'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
@@ -67,7 +73,7 @@ class ErshoufangSpider(scrapy.Spider):
                 }
                 url = url
                 print(f'页码：{pn}，链接：{url}')
-                yield Request(url=url,callback=self.parse,headers=hdd,meta={'countPage':countPage,'pn':pn},dont_filter=True)
+                yield Request(url=url,callback=self.parse,headers=hdd,meta={'countPage':countPage,'pn':pn,'count':count},dont_filter=True)
             else:
                 pass
 
@@ -83,7 +89,8 @@ class ErshoufangSpider(scrapy.Spider):
         item['pageUrl'] = response.url
         item['countPage'] = response.meta['countPage']
         item['pageNum'] = response.meta['pn']
-        print(f"状态码：{status},网址：{item['pageUrl']},共计{item['countPage']}页，当前第{item['pageNum']}页")
+        item['ord'] = response.meta['count']
+        print(f"状态码：{status},网址：{item['pageUrl']},共计{item['countPage']}页，当前第{item['pageNum']}页,第{item['ord']}条链接")
         jsonInfo = re.findall(r'(?<=____json4fe = )(.*)(?=;)',response.text)[1]
         item['city'] = json.loads(jsonInfo)['locallist'][0]['name']
         item['city_ln'] = json.loads(jsonInfo)['locallist'][0]['listname']
