@@ -6,6 +6,7 @@
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+import random
 
 
 class WubaSpiderMiddleware(object):
@@ -101,3 +102,10 @@ class WubaDownloaderMiddleware(object):
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+class wubaProxyMiddleware(object):
+    def process_request(self,request,spider):
+        ip = ['http://125.111.146.18:4205',
+              'http://114.237.42.230:5521',
+              'http://110.19.190.211:6410']
+        request.meta['proxy'] = random.choice(ip)

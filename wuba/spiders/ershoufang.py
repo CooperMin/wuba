@@ -28,6 +28,7 @@ class ErshoufangSpider(scrapy.Spider):
 
     def countPage(self,response):
         countPage = int(response.xpath('//div[@class="pager"]/a[@class="next"]/preceding-sibling::a[1]/span/text()').extract()[0])
+        print(f'\033[1;31m共计{countPage}页！\033[0m')
         # countPage = 1 #测试代码，正式爬取请注释掉
         for pn in range(1,countPage+1):
             if pn == 1:
@@ -48,7 +49,6 @@ class ErshoufangSpider(scrapy.Spider):
             yield Request(url=pageUrl, callback=self.getLink, headers=hdl,meta={'pn':pn,'pageUrl':pageUrl,'countPage':countPage},dont_filter=True)
 
     def getLink(self,response):
-        print(response.status)
         pn = response.meta['pn']
         countPage = response.meta['countPage']
         pageUrl = response.meta['pageUrl']
@@ -81,9 +81,9 @@ class ErshoufangSpider(scrapy.Spider):
         item = WubaItem()
         status = response.status
         item['pageUrl'] = response.url
-        countPage = response.meta['countPage']
-        pn = response.meta['pn']
-        print(f"状态码：{status},网址：{item['pageUrl']},共计{countPage}页，当前第{pn}页")
+        item['countPage'] = response.meta['countPage']
+        item['pageNum'] = response.meta['pn']
+        print(f"状态码：{status},网址：{item['pageUrl']},共计{item['countPage']}页，当前第{item['pageNum']}页")
         jsonInfo = re.findall(r'(?<=____json4fe = )(.*)(?=;)',response.text)[1]
         item['city'] = json.loads(jsonInfo)['locallist'][0]['name']
         item['city_ln'] = json.loads(jsonInfo)['locallist'][0]['listname']

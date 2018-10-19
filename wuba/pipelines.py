@@ -56,6 +56,10 @@ class WubaPipeline(object):
                 insert into wbadd (city,borough,street,city_ln,borough_ln,street_ln)
                 values ("{}","{}","{}","{}","{}","{}")
                 """.format(item['city'],item['borough'],item['street'],item['city_ln'],item['borough_ln'],item['street_ln'])
+        insCount = """
+                insert into pageCountInfo (city,countPage,pageNum)
+                values ("{}","{}","{}")
+                """.format(item['city'],item['countPage'],item['pageNum'])
         try:
             self.cursor.execute(insInfo)
             self.client.commit()
@@ -94,6 +98,16 @@ class WubaPipeline(object):
         except Exception as e:
             self.client.rollback()
             print('\n\033[1;31m{0} Warning：表【wbadd】数据插入失败！ {0}\033[0m'.format(23 * '+'))
+            print('\033[1;31m{1}{0}{1} \033[0m'.format(e, 6 * '+'))
+            print('\033[1;31m{0}\033[0m\n'.format(65 * '+'))
+        try:
+            self.cursor.execute(insCount)
+            self.client.commit()
+            localTime = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime())
+            print(f'表【pageCountInfo】数据插入成功！(当前时间：{localTime})')
+        except Exception as e:
+            self.client.rollback()
+            print('\n\033[1;31m{0} Warning：表【pageCountInfo】数据插入失败！ {0}\033[0m'.format(23 * '+'))
             print('\033[1;31m{1}{0}{1} \033[0m'.format(e, 6 * '+'))
             print('\033[1;31m{0}\033[0m\n'.format(65 * '+'))
 
