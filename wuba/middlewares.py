@@ -105,9 +105,9 @@ class WubaDownloaderMiddleware(object):
 
 # class wubaProxyMiddleware(object):
 #     def process_request(self,request,spider):
-#         ip = ['http://175.153.73.42:7684',
-#               'http://125.111.145.33:4205',
-#               'http://58.243.12.219:4286']
-#         ip = random.choice(ip)
+#         ip = ['http://223.153.183.84:4283',   #到期时间： 2018-10-20 15:30:11
+#               'http://111.76.161.155:4234',   #到期时间： 到期时间： 2018-10-20 15:30:02
+#               'http://183.147.221.125:4232']  #到期时间： 2018-10-20 15:32:01
+#         ip = random.choice(ip)#
 #         print(f'代理IP：{ip}')
 #         request.meta['proxy'] = ip

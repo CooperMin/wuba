@@ -26,7 +26,7 @@ class WubaPipeline(object):
 
     def process_item(self, item, spider):
         insInfo = """
-            insert into wbInfo (city,borough,street,username,tel,price,realsize,area,towards,realEstateE,
+            insert into wbinfo (city,borough,street,username,tel,price,realsize,area,towards,realEstateE,
                                 bankcard,realName,weixin,zhima,zhimaFen,writeTime,huxingshi,huxingwei,huxingting,jushishuru,
                                 HireType,MinPrice,userid,title,xiaoqu_lon,xiaoqu_lat,xiaoqu_name,city_ln,borough_ln,street_ln,
                                 pageUrl)
@@ -64,10 +64,10 @@ class WubaPipeline(object):
             self.cursor.execute(insInfo)
             self.client.commit()
             localTime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-            print(f'表【wbInfo】数据插入成功！(当前时间：{localTime})')
+            print(f'表【wbinfo】数据插入成功！(当前时间：{localTime})')
         except Exception as e:
             self.client.rollback()
-            print('\n\033[1;31m{0} Warning：表【wbInfo】数据插入失败！ {0}\033[0m'.format(23 * '+'))
+            print('\n\033[1;31m{0} Warning：表【wbinfo】数据插入失败！ {0}\033[0m'.format(23 * '+'))
             print('\033[1;31m{1}{0}{1} \033[0m'.format(e, 6 * '+'))
             print('\033[1;31m{0}\033[0m\n'.format(65 * '+'))
         try:

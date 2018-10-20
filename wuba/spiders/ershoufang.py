@@ -8,14 +8,14 @@ from wuba.items import WubaItem
 
 
 class ErshoufangSpider(scrapy.Spider):
-    city = 'sz'
+    city = 'wuhu'
     name = 'ershoufang'
     allowed_domains = [f'https://{city}.58.com']
     start_urls = [f'http://https://{city}.58.com/']
 
 
     def start_requests(self):
-        city = 'sz'
+        city = 'wuhu'
         hds = {
             'Host': f'{city}.58.com',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:62.0) Gecko/20100101 Firefox/62.0',
@@ -94,8 +94,12 @@ class ErshoufangSpider(scrapy.Spider):
         jsonInfo = re.findall(r'(?<=____json4fe = )(.*)(?=;)',response.text)[1]
         item['city'] = json.loads(jsonInfo)['locallist'][0]['name']
         item['city_ln'] = json.loads(jsonInfo)['locallist'][0]['listname']
-        item['borough'] = json.loads(jsonInfo)['locallist'][1]['name']
-        item['borough_ln'] = json.loads(jsonInfo)['locallist'][1]['listname']
+        if len(json.loads(jsonInfo)['locallist']) >=2:
+            item['borough'] = json.loads(jsonInfo)['locallist'][1]['name']
+            item['borough_ln'] = json.loads(jsonInfo)['locallist'][1]['listname']
+        else:
+            item['borough'] = ''
+            item['borough_ln'] = ''
         if len(json.loads(jsonInfo)['locallist']) >= 3:
             item['street'] = json.loads(jsonInfo)['locallist'][2]['name']
             item['street_ln'] = json.loads(jsonInfo)['locallist'][2]['listname']
@@ -123,7 +127,10 @@ class ErshoufangSpider(scrapy.Spider):
         item['writeTime'] = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(start))
         supplycount = json.loads(jsonInfo)['supplycount'].replace("'",'"')
         item['huxingshi'] = json.loads(supplycount)['paramdata']['huxingshi']
-        item['huxingwei'] = json.loads(supplycount)['paramdata']['huxingwei']
+        if 'huxingwei' in response.text:
+            item['huxingwei'] = json.loads(supplycount)['paramdata']['huxingwei']
+        else:
+            item['huxingwei'] = -1
         item['huxingting'] = json.loads(supplycount)['paramdata']['huxingting']
         item['jushishuru'] = json.loads(supplycount)['paramdata']['jushishuru']
         item['HireType'] = json.loads(supplycount)['paramdata']['HireType']#租用类型
