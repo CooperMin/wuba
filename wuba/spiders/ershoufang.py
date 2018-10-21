@@ -111,7 +111,10 @@ class ErshoufangSpider(scrapy.Spider):
             item['street'] = ''
             item['street_ln'] = ''
         item['username'] = json.loads(jsonInfo)['personal']['userName']
-        item['tel'] = int(response.xpath('//p[@class="phone-num"]/text()').extract()[0].replace(' ','').strip())
+        if '抱歉，该房源已过期' in response.text:
+            item['tel'] = -1
+        else:
+            item['tel'] = int(response.xpath('//p[@class="phone-num"]/text()').extract()[0].replace(' ','').strip())
         # pubTime = str(json.loads(jsonInfo)['_trackParams'][17]['V'])
         # item['pubTime'] = '{0}-{1}-{2} {3}:{4}:{5}'.format(pubTime[0:4], pubTime[4:6], pubTime[6:8], pubTime[8:10],pubTime[10:12], pubTime[12:14])
         if '产权年限' in response.text:
