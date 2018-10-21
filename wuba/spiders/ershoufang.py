@@ -8,25 +8,29 @@ from wuba.items import WubaItem
 
 
 class ErshoufangSpider(scrapy.Spider):
-    city = 'wuhu'
     name = 'ershoufang'
-    allowed_domains = [f'https://{city}.58.com']
-    start_urls = [f'http://https://{city}.58.com/']
+    # allowed_domains = ['https://sh.58.com']
+    # start_urls = ['http://https://sh.58.com/']
 
 
     def start_requests(self):
-        city = 'wuhu'
-        hds = {
-            'Host': f'{city}.58.com',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:62.0) Gecko/20100101 Firefox/62.0',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
-            'Connection': 'keep-alive',
-            'Upgrade-Insecure-Requests': 1
+        file = 'wuba/city_code.txt'
+        with open(file, 'r', encoding='utf-8') as f:
+            f = f.readlines()[29:49]
+            for city in f:
+                time.sleep(2)
+                city = city.strip()
+                hds = {
+                    'Host': f'{city}.58.com',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:62.0) Gecko/20100101 Firefox/62.0',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': 1
 
-        }
-        start_url = f'https://{city}.58.com/ershoufang/0/?PGTID=0d30000c-0000-2f8f-3fe6-946742aaab68&ClickID=1'
-        yield Request(url=start_url,callback=self.countPage,headers=hds,meta={'city':city},dont_filter=True)
+                }
+                start_url = f'https://{city}.58.com/ershoufang/0/?PGTID=0d30000c-0000-2f8f-3fe6-946742aaab68&ClickID=1'
+                yield Request(url=start_url,callback=self.countPage,headers=hds,meta={'city':city},dont_filter=True)
 
     def countPage(self,response):
         countPage = int(response.xpath('//div[@class="pager"]/a[@class="next"]/preceding-sibling::a[1]/span/text()').extract()[0])
@@ -131,7 +135,10 @@ class ErshoufangSpider(scrapy.Spider):
             item['huxingwei'] = json.loads(supplycount)['paramdata']['huxingwei']
         else:
             item['huxingwei'] = -1
-        item['huxingting'] = json.loads(supplycount)['paramdata']['huxingting']
+        if 'huxingting' in response.text:
+            item['huxingting'] = json.loads(supplycount)['paramdata']['huxingting']
+        else:
+            item['huxingting'] = -1
         item['jushishuru'] = json.loads(supplycount)['paramdata']['jushishuru']
         item['HireType'] = json.loads(supplycount)['paramdata']['HireType']#租用类型
         item['MinPrice'] = json.loads(supplycount)['paramdata']['MinPrice']
