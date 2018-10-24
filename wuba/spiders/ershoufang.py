@@ -14,9 +14,10 @@ class ErshoufangSpider(scrapy.Spider):
 
 
     def start_requests(self):
-        file = 'wuba/city_code.txt'
+        file = 'city_code.txt'
+        # file = '/home/doc/city_code.txt'
         with open(file, 'r', encoding='utf-8') as f:
-            f = f.readlines()[29:49]
+            f = f.readlines()[137:153]
             for city in f:
                 time.sleep(2)
                 city = city.strip()
@@ -33,11 +34,14 @@ class ErshoufangSpider(scrapy.Spider):
                 yield Request(url=start_url,callback=self.countPage,headers=hds,meta={'city':city},dont_filter=True)
 
     def countPage(self,response):
-        countPage = int(response.xpath('//div[@class="pager"]/a[@class="next"]/preceding-sibling::a[1]/span/text()').extract()[0])
-        print(f'\033[1;31m共计{countPage}页！\033[0m')
+        city = response.meta['city']
+        if '下一页' in response.text:
+            countPage = int(response.xpath('//div[@class="pager"]/a[@class="next"]/preceding-sibling::a[1]/span/text()').extract()[0])
+        else:
+            countPage = 1
+        print(f'\033[1;31m{city}共计{countPage}页！\033[0m')
         # countPage = 1 #测试代码，正式爬取请注释掉
         for pn in range(1,countPage+1):
-            city = response.meta['city']
             if pn == 1:
                 pageUrl = f'https://{city}.58.com/ershoufang/0/?PGTID=0d30000c-0000-2f8f-3fe6-946742aaab68&ClickID=1'
                 referer = f'Referer: https://{city}.58.com/ershoufang/?PGTID=0d200001-0000-2308-0e03-36c5cefc6be3&ClickID=1'
